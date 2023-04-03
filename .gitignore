@@ -1,1 +1,16 @@
+
+node_modules/
+
+# dotenv environment variables file
 .env
+
+
+ 
+
+.node
+node_modules/
+__pycache__/
+
+# Logs
+logs
+*.log
