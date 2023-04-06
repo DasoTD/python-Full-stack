@@ -92,35 +92,39 @@ class Signup(APIView):
     serializer_class = Signup
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
-
-        password1 = request.data.get('password')
-        password2 = request.data.get('password2')
-        if not password1 == password2:
-            messages.info(request,'password did not match')
-            # return redirect('/signup')
-            return Response({'wahala Request': 'Password did not match...'})
         if serializer.is_valid():
+            # 'firstname', 'lastname', 'username', 'email', 'password', 'phone_number'
             username = serializer.data.get('username')
             lastname = serializer.data.get('lastname')
             firstname = serializer.data.get('firstname')
             email = serializer.data.get('email')
             phone_number = serializer.data.get('phone_number')
             password = serializer.data.get('password')
-            # if password == password2:
-            if UserProfile.objects.filter(email=email).exists():
-                messages.info(request,'email already exist')
-                return Response({'wahala Request': 'email already exist...'})
-            if UserProfile.objects.filter(username=username).exists():
-                messages.info(request,'username already exist')
-                return Response({'wahala Request': 'username already exist...'})
-            if UserProfile.objects.filter(phone_number=phone_number).exists():
-                messages.info(request,'number already exist')
-                return Response({'wahala Request': 'number already exist...'})
-            else:
-                profile = UserProfile(username=username, lastname=lastname, firstname=firstname,email=email,phone_number=phone_number, password=password)
-                profile.save()
-                return Response({'Good Request': 'valid data...'}, status=status.HTTP_201_CREATED)
-            
+            password2 = serializer.data.get('password2')
+            if password == password2:
+                if UserProfile.objects.filter(email=email).exists():
+                    messages.info(request,'email already exist')
+                    return redirect('/signup')
+                if UserProfile.objects.filter(username=username).exists():
+                    messages.info(request,'username already exist')
+                    return redirect('/signup')
+                if UserProfile.objects.filter(phone_number=phone_number).exists():
+                    messages.info(request,'number already exist')
+                    return redirect('/signup')
+                else:
+                    profile = UserProfile(username=username, lastname=lastname, firstname=firstname,email=email,phone_number=phone_number, password=password)
+                    profile.save()
+                    return Response({'Good Request': 'valid data...'}, status=status.HTTP_201_CREATED)
+            # print(username, password)
+            # user = User.objects.create_user(username=username, email=email, password=password)
+            # user.save()
+            # user_login = auth.authenticate(username=username, password=password)
+            # auth.login(request, user_login)
+            # user_model = User.objects.get(username=username)
+            # new_profile= Profile.objects.create(user=user_model, id_user=user_model.id)
+            # new_profile.save()
+            # return Response(status=status.HTTP_201_CREATED)
+            # return HttpResponse("successs")
             
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
 
