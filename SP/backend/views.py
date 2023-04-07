@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.contrib.auth.hashers import make_password
 from django.http import HttpResponse
 from requests import Response
 from rest_framework import generics,status
@@ -7,7 +7,6 @@ from rest_framework.views import APIView
 from .models import Rum, Post, UserProfile
 from .serializers import RoomSerializers, CreatePostSerializers, createRoomSerializer, Signup
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
 from django.contrib.auth.models import User,  auth
 from django.contrib.auth import authenticate
 # from rest_framework.authentication import authenticate
@@ -16,6 +15,8 @@ from  django.contrib import messages
 from django.contrib.auth.decorators import login_required
 import logging
 from django.views.decorators.csrf import csrf_exempt
+import environ
+env = environ.Env(DEBUG=(bool, False))
 # Create your views here.
 
 def main(request):
@@ -106,7 +107,7 @@ class Signup(APIView):
             email = serializer.data.get('email')
             phone_number = serializer.data.get('phone_number')
             password = serializer.data.get('password')
-            # if password == password2:
+            password = make_password(password, salt=env("SALT"), hasher='default')
             if UserProfile.objects.filter(email=email).exists():
                 messages.info(request,'email already exist')
                 return Response({'wahala Request': 'email already exist...'})

@@ -36,7 +36,7 @@ class UserProfile(models.Model):
     lastname= models.CharField(max_length=50, default="dd")
     username= models.CharField(max_length=20, unique=True, default="dd", error_messages={'unique':"This username has already been registered."})
     email= models.CharField(max_length=50, unique=True, default="dd", error_messages={'unique':"This email has already been registered."})
-    password = models.CharField(max_length=50,default="dd")
+    password = models.CharField(max_length=200,default="dd")
     phone_number= models.CharField(max_length=50, default=12, error_messages={'unique':"This number has already been registered."})
     last_login = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
